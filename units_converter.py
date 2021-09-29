@@ -1,3 +1,4 @@
+# Is this a conflict? Is this a butterfly?
 # This program converts from RCF or g to RPM and vice versa.
 # RCF (Relative Centrifugal Force) is the amount of acceleration to be applied to the sample due to the force generated from the spinning of rotor and gravitational force. RCF is synonymous to g-force (g).
 # RPM (Revolutions Per Minute) is the measurement of how fast the centrifuge rotor does a full rotation in one minute. It is basically a speed of the centrifuge.
