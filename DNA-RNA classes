@@ -1,0 +1,58 @@
+class Rna:
+
+    # any case, atgc
+    def __init__(self, rna_sequence):
+        self.rna_sequence = rna_sequence.upper()
+        if len(rna_sequence) == 0:
+            raise Exception('Your sequence is empty')
+
+    def gc_content(self):
+        rna_gc = (self.rna_sequence.count('G') + self.rna_sequence.count('C')) / len(self.rna_sequence)
+        return rna_gc
+
+    def reverse_complement(self):
+        rna_complementary = {'A':'U', 'U':'A', 'G':'C', 'C':'G'}
+        return ''.join(reversed([rna_complementary[base] for base in self.rna_sequence]))
+
+    def __iter__(self):
+        return iter(self.rna_sequence)
+
+    def __eq__(self, other):
+        if not isinstance(other, Rna):
+            return NotImplemented
+        return self.rna_sequence == other.rna_sequence
+
+    def __hash__(self):
+        return hash(self.rna_sequence)
+
+
+class Dna:
+
+    def __init__(self, dna_sequence):
+        self.dna_sequence = dna_sequence.upper()
+        if len(dna_sequence) == 0:
+            raise Exception('Your sequence is empty')
+
+    def gc_content(self):
+        dna_gc = (self.dna_sequence.count('G') + self.dna_sequence.count('C')) / len(self.dna_sequence)
+        return dna_gc
+
+    def reverse_complement(self):
+        dna_complementary = {'A':'T', 'T':'A', 'G':'C', 'C':'G'}
+        return ''.join(reversed([dna_complementary[base] for base in self.dna_sequence]))
+
+    def __iter__(self):
+        return iter(self.dna_sequence)
+
+    def __eq__(self, other):
+        if not isinstance(other, Dna):
+            return NotImplemented
+        return self.dna_sequence == other.dna_sequence
+
+    def __hash__(self):
+        return hash(self.dna_sequence)
+
+    def transcribe(self):
+        dna_rna = {'A':'U', 'T':'A', 'G':'C', 'C':'G'}
+        rna_transcribed = ''.join([dna_rna[base] for base in self.dna_sequence])
+        return Rna(rna_transcribed)
