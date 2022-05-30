@@ -1,0 +1,158 @@
+# write functionality
+class LinkedListItem:
+
+    def __init__(self, value):
+        self.value = value
+        self.__next = None
+
+    def get_next(self):
+        return self.__next
+
+    def set_next(self, next_item):
+        self.__next = next_item
+
+    def has_next(self):
+        return self.__next is not None
+
+
+class LinkedList:
+
+    def __init__(self):
+        self.__head = None
+        self.__tail = None
+        self.__len = 0
+
+    def __getitem__(self, index):
+        current = self.__head
+        for _ in range(index):
+            if current is None or current.has_next():
+                raise IndexError
+            current = current.get_next()
+        return current.value
+
+    def __len__(self):
+        return self.__len
+
+    def __contains__(self, value):
+        current = self.__head
+        for _ in range(self.__len):
+            if current.value == value:
+                return True
+            current = current.get_next()
+        return False
+
+    def add(self, value, index=None):
+        new_item = LinkedListItem(value)
+
+        # if no index or index points at the last item, insert as usual
+        if index is None:
+            if not self.__head:
+                self.__head = new_item
+            else:
+                self.__tail.set_next(new_item)
+            self.__tail = new_item
+
+        # if index is 0, insert at head
+        elif index == 0:
+            new_item.set_next(self.__head)
+            self.__head = new_item
+
+        else:
+            current = self.__head
+            for i in range(index - 1):
+                if current is None or not current.has_next():
+                    raise IndexError
+                current = current.get_next()
+            new = current.get_next()
+            current.set_next(new_item)
+            new_item.set_next(new)
+
+        self.__len += 1
+
+    def add_all(self, values, index=None):
+        if index > self.__len:
+            raise IndexError
+
+        for i in values:
+            self.add(i, index)
+            index += 1
+
+    def pop(self, index=None):
+        # if no index, delete last element as usual
+        if index is None:
+            index = self.__len - 1
+
+        # if index is 0, delete head
+        elif index == 0:
+            self.__head = self.__head.get_next()
+
+        else:
+            current = self.__head
+            for i in range(index - 1):
+                if current is None or not current.has_next():
+                    raise IndexError
+                current = current.get_next()
+            new = current.get_next()
+            current.set_next(new)
+
+        self.__len -= 1
+
+    def remove_last_occurence(self, value):
+        current = self.__head
+        index = None
+
+        for i in range(self.__len):
+            if current.value == value:
+                index = i
+            current = current.get_next()
+        if index is not None:
+            self.pop(index)
+
+    def first(self):
+        return self.__head.value
+
+    def last(self):
+        return self.__tail.value
+
+# test functionality
+import unittest
+from linked_list import LinkedList
+
+
+class Test_LinkedList(unittest.TestCase):
+
+    def test_add(self):
+        test_list = LinkedList()
+        test_list.add(0)
+        self.assertEqual(list(test_list), [0])
+        test_list.add(1)
+        self.assertEqual(list(test_list), [0, 1])
+        test_list.add(2, 1)
+        self.assertEqual(list(test_list), [0, 2, 1])
+
+    def test_add_all(self):
+        test_list = LinkedList()
+        test_list.add_all([0, 1, 2, 3, 4])
+        self.assertEqual(list(test_list), [0, 1, 2, 3, 4])
+        test_list.add_all([5, 6], 4)
+        self.assertEqual(list(test_list), [0, 1, 2, 3, 4, 5, 6])
+        test_list.add_all([0], 1)
+        self.assertEqual(list(test_list), [0, 1, 0, 2, 3, 4, 5, 6])
+
+    def test_pop(self):
+        test_list = LinkedList()
+        test_list.add_all([0, 1, 2, 3, 4])
+        test_list.pop()
+        self.assertEqual(list(test_list), [0, 1, 2, 3])
+        test_list.pop(0)
+        self.assertEqual(list(test_list), [1, 2, 3])
+        test_list.pop(1)
+        self.assertEqual(list(test_list), [1, 3])
+
+    def test_remove_last_occurence(self):
+        test_list = LinkedList()
+        test_list.add_all([0, 1, 2, 2, 3])
+        test_list.remove_last_occurence(2)
+        self.assertEqual(list(test_list), [0, 1, 2, 3])
+        test_list.remove_last_occurence(0)
+        self.assertEqual(list(test_list), [1, 2, 3])
